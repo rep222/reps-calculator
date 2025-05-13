@@ -1,9 +1,8 @@
-let firstOperand;
-let secondOperand;
+let firstOperand = null;
+let secondOperand = null;
 let firstOperator;
-let secondOperator;
 let currentInput = '';
-let sum;
+let sum = null;
 let isOperatorClicked = false;
 let displayText = document.querySelector(".display-text");
 
@@ -12,67 +11,85 @@ const numbers = document.querySelectorAll(".number");
 const operators = document.querySelectorAll(".operator");
 const equals = document.querySelector(".operate");
 const clear = document.querySelector(".clear-all");
+const valueBtn = document.querySelector(".value"); 
 
 function add(a, b) {
-    sum = a + b;
     return a + b;
 }
 
 function subtract(a, b) {
-    sum = a - b;
     return a - b;
 }
 
 function multiply(a, b) {
-    sum = a * b;
     return a * b;
 }
 
 function divide(a, b) {
     if (b == 0){
-        return "ERROR";
+        displayText.innerText = "ERROR";
+        return;
     }
-    sum = a / b;
     return a / b;
 }
+function modulo(a, b) {
+    a = Math.floor(a);
+    b = Math.floor(b);
+    if (b === 0){
+        displayText.innerText = "ERROR";
+        return;
+    }
+    return a % b;
+}
+function clearAll(){
+    firstOperand = null;
+    secondOperand = null;
+    firstOperator = '';
+    isOperatorClicked = false;
+    currentInput = '';
+    sum = 0;
+    displayText.innerText = '';
+}
+
 
 function operate(operator, firstNumber, secondNumber) {
     console.log(firstNumber,secondNumber, operator);
     switch(operator) {
         case "+":
             sum = add(firstNumber, secondNumber);
-            firstOperand = 0;
             secondOperand = 0;
             break;
         case "-":
             sum = subtract(firstNumber, secondNumber);
-            firstOperand = 0;
             secondOperand = 0;
             break;
         case "*":
             sum = multiply(firstNumber, secondNumber);
-            firstOperand = 0;
             secondOperand = 0;
             break;
         case "/":
             sum = divide(firstNumber, secondNumber);
-            firstOperand = 0;
+            secondOperand = 0;
+            break;
+        case "%":
+            sum = modulo(firstNumber, secondNumber);
             secondOperand = 0;
             break;
         default:
-            sum = "ERROR";
+            displayText.innerText = "ERROR";
     }
-    let decimalValue = sum.toString().indexOf(".");
-    let result = sum.toString().substring(decimalValue+1);
-    if (result.length > 5){
-        sum = parseFloat(sum.toFixed(5));
+    if (sum.toString().includes('.')) {
+        let [_, decimal] = sum.toString().split(".");
+        if (decimal.length > 5) {
+            sum = parseFloat(sum.toFixed(5));
+        }
     }
     firstOperand = sum;
     currentInput = '';
 }
 function appendOrReplaceOperator(op) {
     const lastChar = displayText.innerText.slice(-1);
-    if (['+', '-', '*', '/'].includes(lastChar)) {
+    if (['+', '-', '*', '/', '%'].includes(lastChar)) {
         displayText.innerText = displayText.innerText.slice(0, -1) + op;
     } else {
         displayText.innerText += op;
@@ -90,6 +107,7 @@ numbers.forEach( number => {
     number.addEventListener('click', num => {
         currentInput += num.target.id;
         displayText.innerText = currentInput;
+        console.log(currentInput);
     })
 })
 operators.forEach( operator => {
@@ -139,3 +157,18 @@ equals.addEventListener('click', () => {
     }
     }
 )
+
+clear.addEventListener('click', () => {
+    clearAll();
+});
+
+valueBtn.addEventListener('click', () =>{
+    if (displayText.innerText != ''){
+        if(currentInput.startsWith('-')){
+            currentInput = currentInput.slice(1);
+        } else {
+            currentInput = '-' + currentInput;
+        }
+        displayText.innerText = currentInput;
+    }
+})
