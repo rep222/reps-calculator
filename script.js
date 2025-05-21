@@ -5,7 +5,7 @@ let currentInput = '';
 let sum = null;
 let isOperatorClicked = false;
 let displayText = document.querySelector(".display-text");
-
+displayText.innerText = '20+10'
 const decimalPoint = document.querySelector(".decimalPoint");
 const numbers = document.querySelectorAll(".number");
 const operators = document.querySelectorAll(".operator");
